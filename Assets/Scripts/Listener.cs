@@ -8,6 +8,7 @@ public class Listener : MonoBehaviour
 	public void Awake()
 	{
 		menu = GameObject.Find("Menu");
+		menu.SetActive(false);
 	}
 	public void Update()
 	{
