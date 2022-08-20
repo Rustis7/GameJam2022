@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class platformMovement : MonoBehaviour {
+public class PlatformMovement : MonoBehaviour {
 
 	enum Direction {
 		None,
