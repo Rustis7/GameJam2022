@@ -4985,6 +4985,8 @@ MonoBehaviour:
   sensorLength: 0
   movement: {x: 0, y: 0}
   jumped: 0
+  jumpCoolDown: 0.2
+  wallKickCoolDown: 0.3
   dust: {fileID: 0}
 --- !u!114 &7721955312090469051
 MonoBehaviour:
