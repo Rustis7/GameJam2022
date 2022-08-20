@@ -46,17 +46,25 @@ public class platformMovement : MonoBehaviour {
 	private float xPhysicsFactor = 0;
 	private float gravity = 1f;
 
-	private Camera cam;
+	CameraMovement camMovement;
 
 	void Start () {
-		setupCamera();
+		camMovement = Camera.main.GetComponent<CameraMovement>();
+		newCollider = gameObject.GetComponent<CapsuleCollider>();
+		setupMaterial();
+		setupRigidbody();
+	}
+
+	private void setupRigidbody() {
 		rb = gameObject.AddComponent<Rigidbody>();
 		rb.angularDrag = 0;
 		rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezePositionZ;
 		rb.useGravity = false;
 		rb.interpolation = RigidbodyInterpolation.Interpolate;
 		rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-		newCollider = gameObject.GetComponent<CapsuleCollider>();
+	}
+
+	private void setupMaterial() {
 		PhysicMaterial playerMat = new PhysicMaterial("playerMat");
 		playerMat.dynamicFriction = 0.001f;
 		playerMat.staticFriction = 0.001f;
@@ -86,6 +94,7 @@ public class platformMovement : MonoBehaviour {
 	}
 
 	private void handleInputs() {
+		camMovement.LookAt(this.transform.position);
 		if (Input.GetKey(KeyCode.A)) {
 			movement.x -= speed * Time.deltaTime * (wallKicked?0.5f:1);
 		}
@@ -126,13 +135,6 @@ public class platformMovement : MonoBehaviour {
 		Debug.DrawRay(transform.position - new Vector3(0f, newCollider.height/2 - 0.1f, 0f), transform.TransformDirection(Vector3.down) * sensorLength, Color.blue);
 		Debug.DrawRay(transform.position - new Vector3(newCollider.radius, 0f - 0.1f, 0f), transform.TransformDirection(Vector3.left) * sensorLength, Color.yellow);
 		Debug.DrawRay(transform.position + new Vector3(newCollider.radius, 0f - 0.1f, 0f), transform.TransformDirection(Vector3.right) * sensorLength, Color.yellow);
-	}
-
-	private void setupCamera() {
-		cam = Camera.main;
-		cam.transform.SetParent(this.transform);
-		cam.transform.localPosition = new Vector3(0, 6, -11);
-		cam.transform.localRotation = Quaternion.Euler(11f, 0f, 0f);
 	}
 
 }

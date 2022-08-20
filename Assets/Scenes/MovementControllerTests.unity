@@ -425,7 +425,7 @@ GameObject:
   - component: {fileID: 700250929}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -500,8 +500,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 700250924}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15.15, y: 1.64, z: 4.2}
+  m_LocalRotation: {x: -0, y: -0, z: -0.0000000037252903, w: 1}
+  m_LocalPosition: {x: -15.149998, y: 1.6400013, z: 4.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -522,10 +522,12 @@ MonoBehaviour:
   maxJumpAllowed: 2
   jumpCount: 1
   speed: 600
-  jumpForce: 4
+  jumpForce: 25
   rb: {fileID: 0}
   newCollider: {fileID: 0}
-  jumpOrientaion: 0
+  bottomHit: 0
+  leftHit: 0
+  rightHit: 0
   sensorLength: 0
   movement: {x: 0, y: 0}
   jumped: 0
@@ -730,6 +732,7 @@ GameObject:
   - component: {fileID: 1178930457}
   - component: {fileID: 1178930456}
   - component: {fileID: 1178930455}
+  - component: {fileID: 1178930458}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -795,13 +798,28 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1178930454}
-  m_LocalRotation: {x: 0.094034456, y: -0.08168537, z: 0.10976209, w: 0.98612237}
-  m_LocalPosition: {x: -51.3, y: 10.92, z: -13.69}
+  m_LocalRotation: {x: 0.09061645, y: -3.375726e-10, z: -0.0000000037099641, w: 0.9958859}
+  m_LocalPosition: {x: -13.359998, y: 7.4600015, z: -20.490002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 11.735, y: -8.248, z: 11.853}
+  m_LocalEulerAnglesHint: {x: 10.398, y: 0, z: 0}
+--- !u!114 &1178930458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178930454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 714caaf0c2d5f4b5fbd2b046c251178a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  posCamSpeed: 15
+  rotCamSpeed: 0.2
+  camForwardFactor: 0.12
 --- !u!1 &1390572704
 GameObject:
   m_ObjectHideFlags: 0
