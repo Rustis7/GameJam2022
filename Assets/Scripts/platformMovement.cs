@@ -5,14 +5,6 @@ using UnityEngine;
 
 public class PlatformMovement : MonoBehaviour {
 
-	enum Direction {
-		None,
-		Left,
-		Right
-	}
-
-	private const float normalGravity = 40;
-	private const float holdingGravity = 10;
 	private const float lowSensor = 0.3f;
 	private const float longSensor = 0.5f;
 	private const float airFriction = 0.9f;
@@ -113,7 +105,10 @@ public class PlatformMovement : MonoBehaviour {
 				wallKicked = true;
 			}
 		}
-		if(bottomHit) wallKicked = false;
+		if(bottomHit) {
+			xPhysicsFactor = 0;
+			wallKicked = false;
+		}
 	}
 
 	private void updateDrag() {

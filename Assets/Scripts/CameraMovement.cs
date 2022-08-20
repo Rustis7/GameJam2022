@@ -12,11 +12,19 @@ public class CameraMovement : MonoBehaviour {
 	[SerializeField]
 	private float camForwardFactor = 0.12f;
 
+	[SerializeField]
+	private float maxFov= 70;
+	[SerializeField]
+	private float minFov= 60;
+	[SerializeField]
+	private float fovSpeed = 3f;
+
 	private Rigidbody playerRb;
 	private Vector3 camTarget = new Vector3(0,0,0);
+	private Camera cam;
 
-	public void LookAt(Vector3 pos) { 
-		camTarget = new Vector3(pos.x + playerRb.velocity.x * camForwardFactor, (pos.y + 2) + (playerRb.velocity.y) * camForwardFactor, pos.z);
+	void Start() {
+		cam = gameObject.GetComponent<Camera>();
 	}
 
 	void Update() {
@@ -27,6 +35,15 @@ public class CameraMovement : MonoBehaviour {
 		}
 		updateCamRotation();
 		updateCamPosition();
+		updateCamFov();
+	}
+
+	private void updateCamFov() {
+		float magnitudeSpeed = playerRb.velocity.magnitude;
+		if(magnitudeSpeed == 0) magnitudeSpeed = -0.8f;
+		cam.fieldOfView += magnitudeSpeed * Time.deltaTime * fovSpeed;
+		if(cam.fieldOfView > maxFov) cam.fieldOfView = maxFov;
+		if(cam.fieldOfView < minFov) cam.fieldOfView = minFov;
 	}
 
 	private void updateCamRotation () {
@@ -39,6 +56,11 @@ public class CameraMovement : MonoBehaviour {
 		float currentCamSpeed = posCamSpeed * (playerRb.velocity.x == 0?0.5f:1f);
 		Vector3 newPos = currentCamSpeed * (camTarget - transform.position) * Time.deltaTime;
 		this.transform.position = new Vector3(transform.position.x + newPos.x, transform.position.y + newPos.y, camTarget.z-15f);
+	}
+
+	public void LookAt(Vector3 pos) { 
+		if(playerRb == null) return;
+		camTarget = new Vector3(pos.x + playerRb.velocity.x * camForwardFactor, (pos.y + 2) + (playerRb.velocity.y) * camForwardFactor, pos.z);
 	}
 
 }
