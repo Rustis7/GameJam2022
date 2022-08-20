@@ -6,26 +6,31 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    bool wet = false;
-    [SerializeField]
-    float wetness = 0;
-    [SerializeField]
     float health = 100f;
     [SerializeField]
-    private float multiplier = 1;
+    float multiplier = 1f;
     [SerializeField]
-    private Transform checkpoint;
+    float healStrength = 50f;
     [SerializeField]
-    private bool e = false;
-    [SerializeField]
-    private GameObject[] healItems;
-    [SerializeField]
+    float fadeMultiplier = 1f;
+
+    float wetness = 0f;
+    float alpha = 0f;
+    bool wet = false;
+    bool e = false;
+    bool dead = false;
+
+    GameObject[] healItems;
+    GameObject menu;
     Image deathOverlay;
+    Transform checkpoint;
 
 	private void Awake()
 	{
 		healItems = GameObject.FindGameObjectsWithTag("Heal");
         deathOverlay = GameObject.Find("DeathOverlay").GetComponent<Image>();
+        menu = GameObject.Find("Menu");
+        menu.SetActive(false);
     }
 
 	void Update()
@@ -34,9 +39,15 @@ public class Player : MonoBehaviour
         wetness = Mathf.Clamp(wetness, 0f, 100f);
         if (wet) health -= Time.deltaTime * 10f * multiplier;
         if (health <= 0) Death();
-
-        if (Input.GetKey(KeyCode.E)) e = true;
-        else e = false;
+        e = Input.GetKey(KeyCode.E) ? true : false;
+        alpha = Mathf.Clamp01(alpha);
+        alpha += Time.deltaTime * fadeMultiplier * (dead ? 1f : -1f);
+        deathOverlay.color = new Color(0, 0, 0, alpha);
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Debug.Log("LIGMA");
+            menu.SetActive(!menu.activeInHierarchy);
+        }
     }
 
 	private void FixedUpdate()
@@ -64,7 +75,6 @@ public class Player : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-        Debug.Log("Enter");
         if (other.gameObject.CompareTag("Checkpoint") || other.gameObject.CompareTag("Heal"))
 		{
             other.gameObject.transform.GetChild(0).gameObject.SetActive(true);
@@ -78,7 +88,7 @@ public class Player : MonoBehaviour
         {
             other.transform.GetChild(0).gameObject.SetActive(false);
             other.gameObject.SetActive(false);
-            health += 50;
+            Heal(healStrength);
         }
     }
 	private void OnTriggerExit(Collider other)
@@ -88,15 +98,16 @@ public class Player : MonoBehaviour
 
 	void Death()
     {
-        Debug.Log("Player died");
         //Play death sound
         //Play death animation
-        //Do a blackout
-        deathOverlay.color = new Color(0, 0, 0, 255);
-        Respawn();
-        ReloadHealthItems();
-        //Fade in
-        //deathOverlay.color = new Color(0, 0, 0, 0);
+        dead = true;
+        if (alpha >= 1)
+        {
+            Respawn();
+            ReloadHealthItems();
+            //Restore player model and animations
+            dead = false;
+        }
         //Resume gameplay
     }
 
@@ -114,7 +125,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void Heal(int value)
+    public void Heal(float value)
     {
         health += value;
     }

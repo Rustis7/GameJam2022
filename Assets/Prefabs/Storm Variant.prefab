@@ -11,6 +11,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Storm
       objectReference: {fileID: 0}
+    - target: {fileID: 6483599828729889613, guid: c0fb6190e4fff2c4ab039e8785b5240a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6483599828729889614, guid: c0fb6190e4fff2c4ab039e8785b5240a, type: 3}
       propertyPath: m_RootOrder
       value: 0
