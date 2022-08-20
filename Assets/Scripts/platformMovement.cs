@@ -5,14 +5,6 @@ using UnityEngine;
 
 public class PlatformMovement : MonoBehaviour {
 
-	enum Direction {
-		None,
-		Left,
-		Right
-	}
-
-	private const float normalGravity = 40;
-	private const float holdingGravity = 10;
 	private const float lowSensor = 0.3f;
 	private const float longSensor = 0.5f;
 	private const float airFriction = 0.9f;
@@ -41,16 +33,25 @@ public class PlatformMovement : MonoBehaviour {
 	private Vector2 movement;
 	[SerializeField]
 	private Boolean jumped = false;
+	[SerializeField]
+	private float jumpCoolDown = 0.2f;
+	private float nextJumpTime = 0;
+	[SerializeField]
+	private float wallKickCoolDown = 0.3f;
+	private float nextWallKickTime = 0;
 
-	private bool wallKicked = false;
 	private float xPhysicsFactor = 0;
 	private float gravity = 1f;
 
 	CameraMovement camMovement;
 
+	[SerializeField]
+	ParticleSystem dust;
+
 	void Start () {
 		camMovement = Camera.main.GetComponent<CameraMovement>();
 		newCollider = gameObject.GetComponent<CapsuleCollider>();
+		dust = this.GetComponentInChildren<ParticleSystem>();
 		setupMaterial();
 		setupRigidbody();
 	}
@@ -83,37 +84,49 @@ public class PlatformMovement : MonoBehaviour {
 	void FixedUpdate(){
 		float yVelocity = rb.velocity.y - gravity;
 		xPhysicsFactor *= airFriction;
+		if (jumped) {
+			jumped = false;
+			jumpCount++;
+			yVelocity += jumpForce * (bottomHit?1f:0.5f);
+			if (!bottomHit) PlayParticleSystem();
+		}
 		rb.velocity = new Vector3(movement.x + xPhysicsFactor, yVelocity, rb.velocity.z);
 		movement = new Vector3(0f, 0f, 0f);
 		updateDrag();
-		if (jumped){
-			jumped = false;
-			jumpCount++;
-			rb.AddForce(Vector3.up * jumpForce * (bottomHit?0.8f:1f), ForceMode.Impulse);
-		}
 	}
 
 	private void handleInputs() {
 		camMovement.LookAt(this.transform.position);
+		updateStrafe();
+		updateJump();
+		if(bottomHit) xPhysicsFactor = 0;
+	}
+
+	private void updateStrafe() {
+		if(nextWallKickTime > Time.time) return;
 		if (Input.GetKey(KeyCode.A)) {
-			movement.x -= speed * Time.deltaTime * (wallKicked?0.5f:1);
+			movement.x -= speed * Time.deltaTime;
 		}
 		if (Input.GetKey(KeyCode.D)) {
-			movement.x += speed * Time.deltaTime * (wallKicked?0.5f:1);
+			movement.x += speed * Time.deltaTime;
 		}
-		if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumpAllowed){
-			wallKicked = false;
-			jumped = true;
-			if (!bottomHit && leftHit) {
-				xPhysicsFactor += speed * 8 * Time.deltaTime;
-				wallKicked = true;
-			}
-			else if (!bottomHit && rightHit) {
-				xPhysicsFactor -= speed * 8 * Time.deltaTime;
-				wallKicked = true;
-			}
+	}
+
+	private void updateJump() {
+		if (!Input.GetKeyDown(KeyCode.Space) || jumpCount >= maxJumpAllowed || Time.time < nextJumpTime) return;
+		rb.drag = 0;
+		nextJumpTime = Time.time + jumpCoolDown;
+		jumped = true;
+		if(bottomHit) return;
+		if (leftHit) {
+			xPhysicsFactor += speed * 20 * Time.deltaTime;
+			nextWallKickTime = Time.time + wallKickCoolDown;
+			return;
 		}
-		if(bottomHit) wallKicked = false;
+		if (rightHit) {
+			xPhysicsFactor -= speed * 20 * Time.deltaTime;
+			nextWallKickTime = Time.time + wallKickCoolDown;
+		}
 	}
 
 	private void updateDrag() {
@@ -137,4 +150,7 @@ public class PlatformMovement : MonoBehaviour {
 		Debug.DrawRay(transform.position + new Vector3(newCollider.radius, 0f - 0.1f, 0f), transform.TransformDirection(Vector3.right) * sensorLength, Color.yellow);
 	}
 
+	void PlayParticleSystem() {
+		dust.Play();
+	}
 }

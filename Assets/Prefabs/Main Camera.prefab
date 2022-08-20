@@ -99,3 +99,6 @@ MonoBehaviour:
   posCamSpeed: 15
   rotCamSpeed: 0.2
   camForwardFactor: 0.12
+  maxFov: 70
+  minFov: 60
+  fovSpeed: 3
