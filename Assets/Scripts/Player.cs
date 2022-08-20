@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
     {
         health = Mathf.Clamp(health, 0f, 100f);
         if (wet) health -= Time.deltaTime * 10f * multiplier;
-        if (health == 0) Death();
+        if (health <= 0) Death();
     }
 
 	private void FixedUpdate()
