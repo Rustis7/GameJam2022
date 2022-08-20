@@ -5,11 +5,17 @@ using UnityEngine;
 
 public class platformMovement : MonoBehaviour {
 
+	enum Direction {
+		None,
+		Left,
+		Right
+	}
+
 	private const float normalGravity = 40;
 	private const float holdingGravity = 10;
 	private const float lowSensor = 0.3f;
 	private const float longSensor = 0.5f;
-	//private const float gravityCap = -10f;
+	private const float airFriction = 0.9f;
 
 	[SerializeField]
 	private int maxJumpAllowed = 2;
@@ -24,8 +30,6 @@ public class platformMovement : MonoBehaviour {
 	[SerializeField]
 	private CapsuleCollider newCollider;
 	[SerializeField]
-	private float jumpOrientation;
-	[SerializeField]
 	private bool bottomHit;
 	[SerializeField]
 	private bool leftHit;
@@ -38,8 +42,8 @@ public class platformMovement : MonoBehaviour {
 	[SerializeField]
 	private Boolean jumped = false;
 
-	// L -> left | R -> right | O -> nothing
-	private char jumpDirection = 'O';
+	private bool wallKicked = false;
+	private float xPhysicsFactor = 0;
 	private float gravity = 1f;
 
 	private Camera cam;
@@ -51,6 +55,7 @@ public class platformMovement : MonoBehaviour {
 		rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezePositionZ;
 		rb.useGravity = false;
 		rb.interpolation = RigidbodyInterpolation.Interpolate;
+		rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 		newCollider = gameObject.GetComponent<CapsuleCollider>();
 		PhysicMaterial playerMat = new PhysicMaterial("playerMat");
 		playerMat.dynamicFriction = 0.001f;
@@ -68,72 +73,43 @@ public class platformMovement : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		//if (bottomHit && !jumped) 
-		float yVelocity = rb.velocity.y - gravity;//(rb.velocity.y - gravity < gravityCap? 0: 1);
-		rb.velocity = new Vector3(movement.x, yVelocity, rb.velocity.z);
-		//else rb.AddForce(movement, ForceMode.Force);
+		float yVelocity = rb.velocity.y - gravity;
+		xPhysicsFactor *= airFriction;
+		rb.velocity = new Vector3(movement.x + xPhysicsFactor, yVelocity, rb.velocity.z);
 		movement = new Vector3(0f, 0f, 0f);
 		updateDrag();
 		if (jumped){
 			jumped = false;
 			jumpCount++;
-			rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-			//rb.AddForce(getJumpDirection() * jumpForce, ForceMode.Impulse);
+			rb.AddForce(Vector3.up * jumpForce * (bottomHit?0.8f:1f), ForceMode.Impulse);
 		}
 	}
 
 	private void handleInputs() {
-		jumpOrientation = 90;
 		if (Input.GetKey(KeyCode.A)) {
-			jumpOrientation += 45.5f;
-			movement.x -= speed * (bottomHit?1:getAirDirectionMomentum('L')) * Time.deltaTime;
+			movement.x -= speed * Time.deltaTime * (wallKicked?0.5f:1);
 		}
 		if (Input.GetKey(KeyCode.D)) {
-			jumpOrientation -= 45.5f;
-			movement.x += speed * (bottomHit?1:getAirDirectionMomentum('R')) * Time.deltaTime;
+			movement.x += speed * Time.deltaTime * (wallKicked?0.5f:1);
 		}
-		//movement.x -= speed * Mathf.Cos(jumpOrientation * Mathf.Deg2Rad) * Time.deltaTime;
-		jumpOrientation *= Mathf.Deg2Rad;
 		if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumpAllowed){
-			if(movement.x > 0) jumpDirection = 'R';
-			if(movement.x < 0) jumpDirection = 'L';
-			if(movement.x == 0) jumpDirection = 'O';
+			wallKicked = false;
 			jumped = true;
+			if (!bottomHit && leftHit) {
+				xPhysicsFactor += speed * 8 * Time.deltaTime;
+				wallKicked = true;
+			}
+			else if (!bottomHit && rightHit) {
+				xPhysicsFactor -= speed * 8 * Time.deltaTime;
+				wallKicked = true;
+			}
 		}
+		if(bottomHit) wallKicked = false;
 	}
 
-	private float getAirDirectionMomentum(char direction) {
-		if(jumpDirection == direction) return 0.7f;
-		if(jumpDirection == 0) return 0.5f;
-		return 0.3f;
-	}
-
-	private updateDrag() {
+	private void updateDrag() {
 		rb.drag = 0;
-		if (leftHit || rightHit) rb.drag = 10;
-	}
-
-	private Vector2 getJumpDirection() {
-		rb.drag = 0;
-		if (leftHit && !bottomHit){
-			jumpOrientation = 45f * Mathf.Deg2Rad;
-			rb.drag = 10;
-		}else if (rightHit && !bottomHit){
-			jumpOrientation = 135f * Mathf.Deg2Rad;
-			rb.drag = 10;
-		}
-		return new Vector2(Mathf.Cos(jumpOrientation), Mathf.Sin(jumpOrientation));
-	}
-
-	private float getJumpOrientation() {
-		if (leftHit){
-			return 45 * Mathf.Deg2Rad;
-		}else if (rightHit){
-			return 135 * Mathf.Deg2Rad;
-		}else if (bottomHit){
-			return 90 * Mathf.Deg2Rad;
-		}
-		return 0;
+		if (rb.velocity.y < 0 && (leftHit || rightHit)) rb.drag = 10;
 	}
 
 	private void updateJumpCount() {
