@@ -11,7 +11,6 @@ public class CameraMovement : MonoBehaviour {
 	private float rotCamSpeed = 0.2f;
 	[SerializeField]
 	private float camForwardFactor = 0.12f;
-
 	[SerializeField]
 	private float maxFov= 70;
 	[SerializeField]

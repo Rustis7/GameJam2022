@@ -34,7 +34,7 @@ public class PlatformMovement : MonoBehaviour {
 	[SerializeField]
 	private Boolean jumped = false;
 	[SerializeField]
-	private float jumpCoolDown = 0.1f;
+	private float jumpCoolDown = 0.2f;
 	private float nextJumpTime = 0;
 	[SerializeField]
 	private float wallKickCoolDown = 0.3f;
@@ -45,9 +45,13 @@ public class PlatformMovement : MonoBehaviour {
 
 	CameraMovement camMovement;
 
+	[SerializeField]
+	ParticleSystem dust;
+
 	void Start () {
 		camMovement = Camera.main.GetComponent<CameraMovement>();
 		newCollider = gameObject.GetComponent<CapsuleCollider>();
+		dust = this.GetComponentInChildren<ParticleSystem>();
 		setupMaterial();
 		setupRigidbody();
 	}
@@ -80,10 +84,11 @@ public class PlatformMovement : MonoBehaviour {
 	void FixedUpdate(){
 		float yVelocity = rb.velocity.y - gravity;
 		xPhysicsFactor *= airFriction;
-		if (jumped){
+		if (jumped) {
 			jumped = false;
 			jumpCount++;
 			yVelocity += jumpForce * (bottomHit?1f:0.5f);
+			if (!bottomHit) PlayParticleSystem();
 		}
 		rb.velocity = new Vector3(movement.x + xPhysicsFactor, yVelocity, rb.velocity.z);
 		movement = new Vector3(0f, 0f, 0f);
@@ -145,4 +150,7 @@ public class PlatformMovement : MonoBehaviour {
 		Debug.DrawRay(transform.position + new Vector3(newCollider.radius, 0f - 0.1f, 0f), transform.TransformDirection(Vector3.right) * sensorLength, Color.yellow);
 	}
 
+	void PlayParticleSystem() {
+		dust.Play();
+	}
 }

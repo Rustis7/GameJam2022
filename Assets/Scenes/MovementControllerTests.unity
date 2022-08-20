@@ -1154,8 +1154,12 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 7888502830351806928, guid: 80ae5208eaccd459686926f1aee92bce, type: 3}
+      propertyPath: jumpCoolDown
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7888502830351806928, guid: 80ae5208eaccd459686926f1aee92bce, type: 3}
       propertyPath: wallKickCoolDown
-      value: 0.5
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 7888502830351806929, guid: 80ae5208eaccd459686926f1aee92bce, type: 3}
       propertyPath: m_RootOrder
