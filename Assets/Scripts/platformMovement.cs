@@ -48,9 +48,13 @@ public class PlatformMovement : MonoBehaviour {
 
 	CameraMovement camMovement;
 
+	[SerializeField]
+	ParticleSystem dust;
+
 	void Start () {
 		camMovement = Camera.main.GetComponent<CameraMovement>();
 		newCollider = gameObject.GetComponent<CapsuleCollider>();
+		dust = this.GetComponentInChildren<ParticleSystem>();
 		setupMaterial();
 		setupRigidbody();
 	}
@@ -90,6 +94,7 @@ public class PlatformMovement : MonoBehaviour {
 			jumped = false;
 			jumpCount++;
 			rb.AddForce(Vector3.up * jumpForce * (bottomHit?0.8f:1f), ForceMode.Impulse);
+			if (!bottomHit) PlayParticleSystem();
 		}
 	}
 
@@ -137,4 +142,8 @@ public class PlatformMovement : MonoBehaviour {
 		Debug.DrawRay(transform.position + new Vector3(newCollider.radius, 0f - 0.1f, 0f), transform.TransformDirection(Vector3.right) * sensorLength, Color.yellow);
 	}
 
+	void PlayParticleSystem()
+	{
+		dust.Play();
+	}
 }

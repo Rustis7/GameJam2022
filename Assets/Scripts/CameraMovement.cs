@@ -11,7 +11,7 @@ public class CameraMovement : MonoBehaviour {
 	private float rotCamSpeed = 0.2f;
 	[SerializeField]
 	private float camForwardFactor = 0.12f;
-
+	[SerializeField]
 	private Rigidbody playerRb;
 	private Vector3 camTarget = new Vector3(0,0,0);
 
