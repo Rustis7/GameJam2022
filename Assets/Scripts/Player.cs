@@ -45,7 +45,6 @@ public class Player : MonoBehaviour
         deathOverlay.color = new Color(0, 0, 0, alpha);
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Debug.Log("LIGMA");
             menu.SetActive(!menu.activeInHierarchy);
         }
     }
