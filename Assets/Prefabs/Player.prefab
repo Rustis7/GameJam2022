@@ -5000,6 +5000,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7fe0f718c67b446a687f6470952bf1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wet: 0
   health: 100
   multiplier: 1
+  healStrength: 50
+  fadeMultiplier: 1
