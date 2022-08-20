@@ -9,6 +9,7 @@ public class platformMovement : MonoBehaviour {
 	private const float holdingGravity = 10;
 	private const float lowSensor = 0.3f;
 	private const float longSensor = 0.5f;
+	//private const float gravityCap = -10f;
 
 	[SerializeField]
 	private int maxJumpAllowed = 2;
@@ -23,7 +24,7 @@ public class platformMovement : MonoBehaviour {
 	[SerializeField]
 	private CapsuleCollider newCollider;
 	[SerializeField]
-	private float jumpOrientaion;
+	private float jumpOrientation;
 	[SerializeField]
 	private bool bottomHit;
 	[SerializeField]
@@ -37,74 +38,91 @@ public class platformMovement : MonoBehaviour {
 	[SerializeField]
 	private Boolean jumped = false;
 
+	// L -> left | R -> right | O -> nothing
+	private char jumpDirection = 'O';
+	private float gravity = 1f;
+
 	private Camera cam;
 
 	void Start () {
 		setupCamera();
 		rb = gameObject.AddComponent<Rigidbody>();
 		rb.angularDrag = 0;
-		//rb.drag = 20;
 		rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezePositionZ;
+		rb.useGravity = false;
+		rb.interpolation = RigidbodyInterpolation.Interpolate;
 		newCollider = gameObject.GetComponent<CapsuleCollider>();
 		PhysicMaterial playerMat = new PhysicMaterial("playerMat");
-		playerMat.dynamicFriction = 0.1f;
-		playerMat.staticFriction = 0.1f;
+		playerMat.dynamicFriction = 0.001f;
+		playerMat.staticFriction = 0.001f;
 		playerMat.frictionCombine = PhysicMaterialCombine.Multiply;
+		playerMat.bounciness = 0;
+		playerMat.bounceCombine = PhysicMaterialCombine.Multiply;
 		newCollider.sharedMaterial = playerMat;
 	}
 
 	void Update () {
 		updateSensors();
 		updateJumpCount();
-		//updatePhysicReaction();
 		handleInputs();
 	}
 
 	void FixedUpdate(){
-		//rb.AddForce(movement, ForceMode.Force);
-		rb.velocity = new Vector3(movement.x, rb.velocity.y, rb.velocity.z);
+		//if (bottomHit && !jumped) 
+		float yVelocity = rb.velocity.y - gravity;//(rb.velocity.y - gravity < gravityCap? 0: 1);
+		rb.velocity = new Vector3(movement.x, yVelocity, rb.velocity.z);
+		//else rb.AddForce(movement, ForceMode.Force);
 		movement = new Vector3(0f, 0f, 0f);
+		updateDrag();
 		if (jumped){
 			jumped = false;
 			jumpCount++;
-			rb.AddForce(getJumpDirection() * jumpForce, ForceMode.Impulse);
+			rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+			//rb.AddForce(getJumpDirection() * jumpForce, ForceMode.Impulse);
 		}
-	}
-
-	private void updatePhysicReaction(){
-		/*
-		if (bottomHit.collider == null && rb.velocity.y < 0 && (leftHit.collider != null || rightHit.collider != null)){
-			rb.gravityScale = holdingGravity;
-		}
-		else {
-			rb.gravityScale = normalGravity;
-		}
-		*/
 	}
 
 	private void handleInputs() {
-		jumpOrientaion = 90;
-		if (Input.GetKey(KeyCode.A)){
-			//jumpOrientaion += 45.5f;
-			movement.x -= speed * Time.deltaTime;
+		jumpOrientation = 90;
+		if (Input.GetKey(KeyCode.A)) {
+			jumpOrientation += 45.5f;
+			movement.x -= speed * (bottomHit?1:getAirDirectionMomentum('L')) * Time.deltaTime;
 		}
-		if (Input.GetKey(KeyCode.D)){
-			//jumpOrientaion -= 45.5f;
-			movement.x += speed * Time.deltaTime;
+		if (Input.GetKey(KeyCode.D)) {
+			jumpOrientation -= 45.5f;
+			movement.x += speed * (bottomHit?1:getAirDirectionMomentum('R')) * Time.deltaTime;
 		}
-		//jumpOrientaion *= Mathf.Deg2Rad;
+		//movement.x -= speed * Mathf.Cos(jumpOrientation * Mathf.Deg2Rad) * Time.deltaTime;
+		jumpOrientation *= Mathf.Deg2Rad;
 		if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumpAllowed){
+			if(movement.x > 0) jumpDirection = 'R';
+			if(movement.x < 0) jumpDirection = 'L';
+			if(movement.x == 0) jumpDirection = 'O';
 			jumped = true;
 		}
 	}
 
+	private float getAirDirectionMomentum(char direction) {
+		if(jumpDirection == direction) return 0.7f;
+		if(jumpDirection == 0) return 0.5f;
+		return 0.3f;
+	}
+
+	private updateDrag() {
+		rb.drag = 0;
+		if (leftHit || rightHit) rb.drag = 10;
+	}
+
 	private Vector2 getJumpDirection() {
+		rb.drag = 0;
 		if (leftHit && !bottomHit){
-			jumpOrientaion = 45f * Mathf.Deg2Rad;
+			jumpOrientation = 45f * Mathf.Deg2Rad;
+			rb.drag = 10;
 		}else if (rightHit && !bottomHit){
-			jumpOrientaion = 135f * Mathf.Deg2Rad;
+			jumpOrientation = 135f * Mathf.Deg2Rad;
+			rb.drag = 10;
 		}
-		return new Vector2(Mathf.Cos(jumpOrientaion), Mathf.Sin(jumpOrientaion));
+		return new Vector2(Mathf.Cos(jumpOrientation), Mathf.Sin(jumpOrientation));
 	}
 
 	private float getJumpOrientation() {
@@ -126,18 +144,18 @@ public class platformMovement : MonoBehaviour {
 
 	private void updateSensors() {
 		sensorLength = (bottomHit) ? lowSensor : longSensor;
-		bottomHit = Physics.Raycast(transform.position - new Vector3(0f, newCollider.height/2 , 0f), transform.TransformDirection(Vector3.down), sensorLength);
-		leftHit = Physics.Raycast(transform.position - new Vector3(newCollider.radius, 0f, 0f), transform.TransformDirection(Vector3.left), sensorLength);
-		rightHit = Physics.Raycast(transform.position + new Vector3(newCollider.radius, 0f, 0f), transform.TransformDirection(Vector3.right), sensorLength);
-		Debug.DrawRay(transform.position - new Vector3(0f, newCollider.height/2, 0f), transform.TransformDirection(Vector3.down) * sensorLength, Color.blue);
-		Debug.DrawRay(transform.position - new Vector3(newCollider.radius, 0f, 0f), transform.TransformDirection(Vector3.left) * sensorLength, Color.yellow);
-		Debug.DrawRay(transform.position + new Vector3(newCollider.radius, 0f, 0f), transform.TransformDirection(Vector3.right) * sensorLength, Color.yellow);
+		bottomHit = Physics.Raycast(transform.position - new Vector3(0f, newCollider.height/2 - 0.1f, 0f), transform.TransformDirection(Vector3.down), longSensor);
+		leftHit = Physics.Raycast(transform.position - new Vector3(newCollider.radius - 0.1f, 0f, 0f), transform.TransformDirection(Vector3.left), sensorLength);
+		rightHit = Physics.Raycast(transform.position + new Vector3(newCollider.radius - 0.1f, 0f, 0f), transform.TransformDirection(Vector3.right), sensorLength);
+		Debug.DrawRay(transform.position - new Vector3(0f, newCollider.height/2 - 0.1f, 0f), transform.TransformDirection(Vector3.down) * sensorLength, Color.blue);
+		Debug.DrawRay(transform.position - new Vector3(newCollider.radius, 0f - 0.1f, 0f), transform.TransformDirection(Vector3.left) * sensorLength, Color.yellow);
+		Debug.DrawRay(transform.position + new Vector3(newCollider.radius, 0f - 0.1f, 0f), transform.TransformDirection(Vector3.right) * sensorLength, Color.yellow);
 	}
 
 	private void setupCamera() {
 		cam = Camera.main;
 		cam.transform.SetParent(this.transform);
-		cam.transform.localPosition = new Vector3(0, 8, -11);
+		cam.transform.localPosition = new Vector3(0, 6, -11);
 		cam.transform.localRotation = Quaternion.Euler(11f, 0f, 0f);
 	}
 
