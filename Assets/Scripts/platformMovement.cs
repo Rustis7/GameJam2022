@@ -33,8 +33,13 @@ public class PlatformMovement : MonoBehaviour {
 	private Vector2 movement;
 	[SerializeField]
 	private Boolean jumped = false;
+	[SerializeField]
+	private float jumpCoolDown = 0.1f;
+	private float nextJumpTime = 0;
+	[SerializeField]
+	private float wallKickCoolDown = 0.3f;
+	private float nextWallKickTime = 0;
 
-	private bool wallKicked = false;
 	private float xPhysicsFactor = 0;
 	private float gravity = 1f;
 
@@ -75,39 +80,47 @@ public class PlatformMovement : MonoBehaviour {
 	void FixedUpdate(){
 		float yVelocity = rb.velocity.y - gravity;
 		xPhysicsFactor *= airFriction;
-		rb.velocity = new Vector3(movement.x + xPhysicsFactor, yVelocity, rb.velocity.z);
-		movement = new Vector3(0f, 0f, 0f);
-		updateDrag();
 		if (jumped){
 			jumped = false;
 			jumpCount++;
-			rb.AddForce(Vector3.up * jumpForce * (bottomHit?0.8f:1f), ForceMode.Impulse);
+			yVelocity += jumpForce * (bottomHit?1f:0.5f);
 		}
+		rb.velocity = new Vector3(movement.x + xPhysicsFactor, yVelocity, rb.velocity.z);
+		movement = new Vector3(0f, 0f, 0f);
+		updateDrag();
 	}
 
 	private void handleInputs() {
 		camMovement.LookAt(this.transform.position);
+		updateStrafe();
+		updateJump();
+		if(bottomHit) xPhysicsFactor = 0;
+	}
+
+	private void updateStrafe() {
+		if(nextWallKickTime > Time.time) return;
 		if (Input.GetKey(KeyCode.A)) {
-			movement.x -= speed * Time.deltaTime * (wallKicked?0.5f:1);
+			movement.x -= speed * Time.deltaTime;
 		}
 		if (Input.GetKey(KeyCode.D)) {
-			movement.x += speed * Time.deltaTime * (wallKicked?0.5f:1);
+			movement.x += speed * Time.deltaTime;
 		}
-		if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumpAllowed){
-			wallKicked = false;
-			jumped = true;
-			if (!bottomHit && leftHit) {
-				xPhysicsFactor += speed * 8 * Time.deltaTime;
-				wallKicked = true;
-			}
-			else if (!bottomHit && rightHit) {
-				xPhysicsFactor -= speed * 8 * Time.deltaTime;
-				wallKicked = true;
-			}
+	}
+
+	private void updateJump() {
+		if (!Input.GetKeyDown(KeyCode.Space) || jumpCount >= maxJumpAllowed || Time.time < nextJumpTime) return;
+		rb.drag = 0;
+		nextJumpTime = Time.time + jumpCoolDown;
+		jumped = true;
+		if(bottomHit) return;
+		if (leftHit) {
+			xPhysicsFactor += speed * 20 * Time.deltaTime;
+			nextWallKickTime = Time.time + wallKickCoolDown;
+			return;
 		}
-		if(bottomHit) {
-			xPhysicsFactor = 0;
-			wallKicked = false;
+		if (rightHit) {
+			xPhysicsFactor -= speed * 20 * Time.deltaTime;
+			nextWallKickTime = Time.time + wallKickCoolDown;
 		}
 	}
 
