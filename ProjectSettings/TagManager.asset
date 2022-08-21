@@ -9,6 +9,7 @@ TagManager:
   - Heal
   - Trap
   - Chocolate
+  - initialSpawn
   layers:
   - Default
   - TransparentFX

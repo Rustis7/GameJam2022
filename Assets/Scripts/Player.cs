@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
 	private AudioClip checkpointSound;
 	[SerializeField]
 	private Transform checkpoint;
+	private Transform initialSpawn;
 
 	private float wetness = 0f;
 	private float alpha = 0f;
@@ -37,6 +38,7 @@ public class Player : MonoBehaviour
 
 	private void Awake()
 	{
+		this.initialSpawn = GameObject.FindGameObjectsWithTag("initialSpawn")[0].transform;
 		prepareChocoMaterials();
 		anim = gameObject.GetComponentInChildren<Animator>();
 		healItems = GameObject.FindGameObjectsWithTag("Heal");
@@ -96,6 +98,11 @@ public class Player : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
+		if(other.gameObject.CompareTag("Finish")) {
+			Camera.main.gameObject.transform.position = new Vector3(checkpoint.position.x - 1, checkpoint.position.y, checkpoint.position.z - 15);
+			checkpoint = initialSpawn;
+			Respawn();
+		}
 		if (other.gameObject.CompareTag("Checkpoint") || other.gameObject.CompareTag("Heal"))
 		{
 			other.gameObject.transform.GetChild(0).gameObject.SetActive(true);

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2994,7 +2994,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7888502830351806929, guid: 80ae5208eaccd459686926f1aee92bce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15.26
+      value: 13.48
       objectReference: {fileID: 0}
     - target: {fileID: 7888502830351806929, guid: 80ae5208eaccd459686926f1aee92bce, type: 3}
       propertyPath: m_LocalPosition.y
@@ -7119,15 +7119,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7522794860746143261, guid: 58dd25ad0fb2b465e9b8850ad7efafd5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -13.359998
+      value: 36.59
       objectReference: {fileID: 0}
     - target: {fileID: 7522794860746143261, guid: 58dd25ad0fb2b465e9b8850ad7efafd5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.4600015
+      value: 38.58
       objectReference: {fileID: 0}
     - target: {fileID: 7522794860746143261, guid: 58dd25ad0fb2b465e9b8850ad7efafd5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -20.490002
+      value: -14.78
       objectReference: {fileID: 0}
     - target: {fileID: 7522794860746143261, guid: 58dd25ad0fb2b465e9b8850ad7efafd5, type: 3}
       propertyPath: m_LocalRotation.w
@@ -18738,13 +18738,13 @@ Transform:
   - {fileID: 536063194}
   - {fileID: 49847734}
   - {fileID: 839709242}
+  - {fileID: 482596541}
   - {fileID: 46701459}
   - {fileID: 543450652573673688}
-  - {fileID: 482596541}
-  - {fileID: 1612661120}
   - {fileID: 364199475}
   - {fileID: 917993206}
   - {fileID: 761346945}
+  - {fileID: 1612661120}
   - {fileID: 659831981}
   - {fileID: 838668651}
   - {fileID: 1070863231}
@@ -21014,7 +21014,7 @@ GameObject:
   - component: {fileID: 1897973948}
   m_Layer: 0
   m_Name: InitialSpawn
-  m_TagString: Untagged
+  m_TagString: initialSpawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -21027,7 +21027,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1897973947}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 15.26, y: 31.487999, z: 0}
+  m_LocalPosition: {x: 13.12, y: 31.487999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -22401,6 +22401,50 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5295084799872128726, guid: 92c2f147dfd29314ab4df66449602b18, type: 3}
   m_PrefabInstance: {fileID: 2064395967}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2070314610
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2070314612}
+  - component: {fileID: 2070314611}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Finish
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &2070314611
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070314610}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &2070314612
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070314610}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 943.46, y: 17.98, z: 0.7}
+  m_LocalScale: {x: 3.3313975, y: 15.907484, z: 14.806844}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2070984298
 PrefabInstance:
   m_ObjectHideFlags: 0
