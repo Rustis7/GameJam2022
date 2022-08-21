@@ -87,6 +87,7 @@ public class Player : MonoBehaviour
 		{
 			other.gameObject.transform.GetChild(0).gameObject.SetActive(true);
 		}
+		if (other.gameObject.CompareTag("Trap")) health = 0;
 	}
 
 	private void OnTriggerStay(Collider other)

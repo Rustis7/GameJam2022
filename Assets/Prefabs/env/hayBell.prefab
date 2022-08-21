@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9168188073126144764}
   - component: {fileID: 5229851175681467737}
   - component: {fileID: 8030162942709715347}
+  - component: {fileID: 4394900215270856316}
   m_Layer: 0
   m_Name: hayBell
   m_TagString: Untagged
@@ -81,3 +82,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4394900215270856316
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8390244411230416966}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.023520924, y: 0.020368822, z: 0.020553676}
+  m_Center: {x: 0.00037543662, y: 0.00009368034, z: 0.000027298924}
