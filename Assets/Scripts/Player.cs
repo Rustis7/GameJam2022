@@ -82,7 +82,11 @@ public class Player : MonoBehaviour
 
 	private void OnTriggerStay(Collider other)
 	{
-        if (other.gameObject.CompareTag("Checkpoint") && e == true) checkpoint = other.gameObject.transform;
+        if (other.gameObject.CompareTag("Checkpoint") && e == true)
+        {
+            checkpoint = other.gameObject.transform;
+            Heal(100);
+        }
         else if (other.gameObject.CompareTag("Heal") && e == true)
         {
             other.transform.GetChild(0).gameObject.SetActive(false);
@@ -92,7 +96,7 @@ public class Player : MonoBehaviour
     }
 	private void OnTriggerExit(Collider other)
 	{
-        other.gameObject.transform.GetChild(0).gameObject.SetActive(false);
+        if (other.gameObject.CompareTag("Checkpoint") || other.gameObject.CompareTag("Heal")) other.gameObject.transform.GetChild(0).gameObject.SetActive(false);
 	}
 
 	void Death()
