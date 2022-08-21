@@ -1,69 +1,9 @@
 fileFormatVersion: 2
-guid: b03823126c50c43a5baa851b4801cd6f
+guid: 69d50ced4cee48c49badf746c970e550
 ModelImporter:
   serializedVersion: 20300
-  internalIDToNameTable:
-  - first:
-      74: -3384957531441887176
-    second: hero-tpose
-  - first:
-      74: 8822612180888960647
-    second: hero-run
-  - first:
-      74: -3310333471862497621
-    second: hero-jump
-  - first:
-      74: -6356439200879227619
-    second: hero-fall
-  - first:
-      74: -9127373674746897061
-    second: hero-doubleJump
-  - first:
-      74: -7523259442832528611
-    second: hero-die
-  - first:
-      74: -8964147094048824982
-    second: hero-tpose.001
-  - first:
-      74: -7529577942355484818
-    second: hero-idle
-  - first:
-      74: -3346884160747423145
-    second: arBunny.001|hero-die
-  - first:
-      74: 6356552644103134184
-    second: arBunny.001|hero-doubleJump
-  - first:
-      74: 3131925919779414954
-    second: arBunny.001|hero-fall
-  - first:
-      74: -7460427329099331347
-    second: arBunny.001|hero-idle
-  - first:
-      74: 4314673160141675087
-    second: arBunny.001|hero-jump
-  - first:
-      74: 8106025550663237237
-    second: arBunny.001|hero-run
-  - first:
-      74: 2248257225489418907
-    second: arBunny.001|hero-tpose
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: eyes-skin
-    second: {fileID: 2100000, guid: 26a6cdafcc1dd423ebf4c356b5e8622c, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: hero-skin-chocolate-darker
-    second: {fileID: 2100000, guid: f8f877f507861480b90246ea0697ddde, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: hero-skin-chocolate-hair
-    second: {fileID: 2100000, guid: b4206e35d9596446ea519f020d91ef7b, type: 2}
+  internalIDToNameTable: []
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -133,7 +73,7 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips: []
-  importAnimation: 0
+  importAnimation: 1
   humanDescription:
     serializedVersion: 3
     human: []
