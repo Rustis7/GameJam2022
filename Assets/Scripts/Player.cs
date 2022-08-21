@@ -31,9 +31,11 @@ public class Player : MonoBehaviour
 	private Image deathOverlay;
 	private Transform checkpoint;
 	private AudioSource audioSrc;
+	private Animator anim;
 
 	private void Awake()
 	{
+		anim = gameObject.GetComponentInChildren<Animator>();
 		healItems = GameObject.FindGameObjectsWithTag("Heal");
 		deathOverlay = GameObject.Find("DeathOverlay").GetComponent<Image>();
 		menu = GameObject.Find("Menu");
@@ -110,8 +112,10 @@ public class Player : MonoBehaviour
 
 	void Death()
 	{
-		playSound(deathSound);
-		//Play death animation
+		if(!dead) {
+			playSound(deathSound);
+			anim.SetTrigger("die");
+		}
 		dead = true;
 		if (alpha >= 1)
 		{
