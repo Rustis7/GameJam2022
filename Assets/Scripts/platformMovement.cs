@@ -10,6 +10,14 @@ public class PlatformMovement : MonoBehaviour {
 	private const float airFriction = 0.9f;
 
 	[SerializeField]
+	ParticleSystem dust;
+	[SerializeField]
+	private AudioClip runningSound;
+	[SerializeField]
+	private AudioClip jumpSound;
+	[SerializeField]
+	private AudioClip landingSound;
+	[SerializeField]
 	private int maxJumpAllowed = 2;
 	[SerializeField]
 	private int jumpCount = 1;
@@ -42,18 +50,29 @@ public class PlatformMovement : MonoBehaviour {
 
 	private float xPhysicsFactor = 0;
 	private float gravity = 1f;
+	private bool landed = true;
 
-	CameraMovement camMovement;
+	private CameraMovement camMovement;
+	private AudioSource audioSrc;
+	private AudioSource effectAudioSrc;
+	private Player player;
+	private Animator anim;
+	private float animationRotationFactor = 0;
 
-	[SerializeField]
-	ParticleSystem dust;
 
 	void Start () {
+		anim = gameObject.GetComponentInChildren<Animator>();
+		player = gameObject.GetComponent<Player>();
 		camMovement = Camera.main.GetComponent<CameraMovement>();
 		newCollider = gameObject.GetComponent<CapsuleCollider>();
 		dust = this.GetComponentInChildren<ParticleSystem>();
 		setupMaterial();
 		setupRigidbody();
+		audioSrc = gameObject.AddComponent<AudioSource>();
+		effectAudioSrc = gameObject.AddComponent<AudioSource>();
+		effectAudioSrc.loop = false;
+		audioSrc.loop = true;
+		audioSrc.clip = runningSound;
 	}
 
 	private void setupRigidbody() {
@@ -79,30 +98,55 @@ public class PlatformMovement : MonoBehaviour {
 		updateSensors();
 		updateJumpCount();
 		handleInputs();
+		updateRunningSound();
+		updateModelOrientation();
+	}
+
+	void updateModelOrientation() {
+		anim.SetBool("falling", !bottomHit && rb.velocity.y < -1);
+		anim.SetBool("isRunning", Mathf.Abs(rb.velocity.x) > 1 && bottomHit);
+		if(rb.velocity.x > 1) animationRotationFactor = 1f;
+		else if(rb.velocity.x < -1) animationRotationFactor = -1f;
+		anim.gameObject.transform.rotation = Quaternion.Euler(0, 90f*animationRotationFactor, 0);
 	}
 
 	void FixedUpdate(){
+		updateMovement();
+		movement = new Vector3(0f, 0f, 0f);
+		updateDrag();
+	}
+
+	private void updateMovement() {
+		Debug.Log(jumpCount);
 		float yVelocity = rb.velocity.y - gravity;
 		xPhysicsFactor *= airFriction;
 		if (jumped) {
 			jumped = false;
 			jumpCount++;
 			yVelocity += jumpForce * (bottomHit?1f:0.5f);
-			if (!bottomHit) PlayParticleSystem();
+			if (!bottomHit) {
+				PlayParticleSystem();
+				anim.SetTrigger("doubleJump");
+			} else anim.SetTrigger("jump");
 		}
 		rb.velocity = new Vector3(movement.x + xPhysicsFactor, yVelocity, rb.velocity.z);
-		movement = new Vector3(0f, 0f, 0f);
-		updateDrag();
 	}
 
 	private void handleInputs() {
 		camMovement.LookAt(this.transform.position);
 		updateStrafe();
 		updateJump();
-		if(bottomHit) xPhysicsFactor = 0;
+		if(bottomHit) {
+			xPhysicsFactor = 0;
+			if(rb.velocity.y < 0f && !landed) {
+				playSound(landingSound);
+				landed = true;
+			}
+		}else landed = false;
 	}
 
 	private void updateStrafe() {
+		if(player.isDead()) return;
 		if(nextWallKickTime > Time.time) return;
 		if (Input.GetKey(KeyCode.A)) {
 			movement.x -= speed * Time.deltaTime;
@@ -113,18 +157,19 @@ public class PlatformMovement : MonoBehaviour {
 	}
 
 	private void updateJump() {
-		if (!Input.GetKeyDown(KeyCode.Space) || jumpCount >= maxJumpAllowed || Time.time < nextJumpTime) return;
+		if (!Input.GetKeyDown(KeyCode.Space) || jumpCount >= maxJumpAllowed || Time.time < nextJumpTime || player.isDead()) return;
+		playSound(jumpSound);
 		rb.drag = 0;
 		nextJumpTime = Time.time + jumpCoolDown;
 		jumped = true;
 		if(bottomHit) return;
 		if (leftHit) {
-			xPhysicsFactor += speed * 20 * Time.deltaTime;
+			xPhysicsFactor += speed * 10 * Time.deltaTime;
 			nextWallKickTime = Time.time + wallKickCoolDown;
 			return;
 		}
 		if (rightHit) {
-			xPhysicsFactor -= speed * 20 * Time.deltaTime;
+			xPhysicsFactor -= speed * 10 * Time.deltaTime;
 			nextWallKickTime = Time.time + wallKickCoolDown;
 		}
 	}
@@ -150,7 +195,21 @@ public class PlatformMovement : MonoBehaviour {
 		Debug.DrawRay(transform.position + new Vector3(newCollider.radius, 0f - 0.1f, 0f), transform.TransformDirection(Vector3.right) * sensorLength, Color.yellow);
 	}
 
-	void PlayParticleSystem() {
+	private void PlayParticleSystem() {
 		dust.Play();
 	}
+
+	private void updateRunningSound () {
+		if(audioSrc.isPlaying && (rb.velocity.magnitude == 0 || !bottomHit)) audioSrc.Pause();
+		if(!audioSrc.isPlaying && rb.velocity.magnitude > 0 && bottomHit) audioSrc.Play();
+	}
+
+	private void playSound(AudioClip clip) {
+		if(clip == null) return;
+		float maxPitch = 1.25f;
+		float minPitch = 0.75f;
+		effectAudioSrc.pitch = UnityEngine.Random.Range(minPitch, maxPitch);
+		effectAudioSrc.PlayOneShot(clip, UnityEngine.Random.Range(minPitch, maxPitch));
+	}
+
 }
