@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5295084799872128726}
   - component: {fileID: 9138982352108509555}
   - component: {fileID: 6426855808426651065}
+  - component: {fileID: 8951124248135028713}
   m_Layer: 0
   m_Name: hayBox
   m_TagString: Untagged
@@ -82,3 +83,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8951124248135028713
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4769377146034621548}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.006367651, y: 0.010582867, z: 0.004181839}
+  m_Center: {x: -0.000016415375, y: -0.000003886176, z: -0.000019824247}

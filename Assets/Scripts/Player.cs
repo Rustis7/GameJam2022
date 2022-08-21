@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
 	private AudioClip deathSound;
 	[SerializeField]
 	private AudioClip checkpointSound;
+	[SerializeField]
+	private Transform checkpoint;
 
 	private float wetness = 0f;
 	private float alpha = 0f;
@@ -29,7 +31,6 @@ public class Player : MonoBehaviour
 	private GameObject[] healItems;
 	private GameObject menu;
 	private Image deathOverlay;
-	private Transform checkpoint;
 	private AudioSource audioSrc;
 	private Animator anim;
 	private Material[] chocoMats;
@@ -99,6 +100,7 @@ public class Player : MonoBehaviour
 		{
 			other.gameObject.transform.GetChild(0).gameObject.SetActive(true);
 		}
+		if (other.gameObject.CompareTag("Trap")) health = 0;
 	}
 
 	private void OnTriggerStay(Collider other)
