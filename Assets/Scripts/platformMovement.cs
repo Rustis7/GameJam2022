@@ -117,7 +117,6 @@ public class PlatformMovement : MonoBehaviour {
 	}
 
 	private void updateMovement() {
-		Debug.Log(jumpCount);
 		float yVelocity = rb.velocity.y - gravity;
 		xPhysicsFactor *= airFriction;
 		if (jumped) {

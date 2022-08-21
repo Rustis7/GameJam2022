@@ -93,6 +93,7 @@ public class Player : MonoBehaviour
 	{
 		if (other.gameObject.CompareTag("Checkpoint") && e == true) {
 			checkpoint = other.gameObject.transform;
+			Heal(100);
 			playSound(checkpointSound);
 		}
 		else if (other.gameObject.CompareTag("Heal") && e == true)
@@ -107,7 +108,7 @@ public class Player : MonoBehaviour
 
 	private void OnTriggerExit(Collider other)
 	{
-		other.gameObject.transform.GetChild(0).gameObject.SetActive(false);
+        if (other.gameObject.CompareTag("Checkpoint") || other.gameObject.CompareTag("Heal")) other.gameObject.transform.GetChild(0).gameObject.SetActive(false);
 	}
 
 	void Death()
