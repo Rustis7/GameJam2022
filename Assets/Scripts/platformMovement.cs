@@ -56,9 +56,12 @@ public class PlatformMovement : MonoBehaviour {
 	private AudioSource audioSrc;
 	private AudioSource effectAudioSrc;
 	private Player player;
+	private Animator anim;
+	private float animationRotationFactor = 0;
 
 
 	void Start () {
+		anim = gameObject.GetComponentInChildren<Animator>();
 		player = gameObject.GetComponent<Player>();
 		camMovement = Camera.main.GetComponent<CameraMovement>();
 		newCollider = gameObject.GetComponent<CapsuleCollider>();
@@ -96,6 +99,15 @@ public class PlatformMovement : MonoBehaviour {
 		updateJumpCount();
 		handleInputs();
 		updateRunningSound();
+		updateModelOrientation();
+	}
+
+	void updateModelOrientation() {
+		anim.SetBool("falling", !bottomHit && rb.velocity.y < -1);
+		anim.SetBool("isRunning", Mathf.Abs(rb.velocity.x) > 1 && bottomHit);
+		if(rb.velocity.x > 1) animationRotationFactor = 1f;
+		else if(rb.velocity.x < -1) animationRotationFactor = -1f;
+		anim.gameObject.transform.rotation = Quaternion.Euler(0, 90f*animationRotationFactor, 0);
 	}
 
 	void FixedUpdate(){
@@ -105,13 +117,17 @@ public class PlatformMovement : MonoBehaviour {
 	}
 
 	private void updateMovement() {
+		Debug.Log(jumpCount);
 		float yVelocity = rb.velocity.y - gravity;
 		xPhysicsFactor *= airFriction;
 		if (jumped) {
 			jumped = false;
 			jumpCount++;
 			yVelocity += jumpForce * (bottomHit?1f:0.5f);
-			if (!bottomHit) PlayParticleSystem();
+			if (!bottomHit) {
+				PlayParticleSystem();
+				anim.SetTrigger("doubleJump");
+			} else anim.SetTrigger("jump");
 		}
 		rb.velocity = new Vector3(movement.x + xPhysicsFactor, yVelocity, rb.velocity.z);
 	}
@@ -148,12 +164,12 @@ public class PlatformMovement : MonoBehaviour {
 		jumped = true;
 		if(bottomHit) return;
 		if (leftHit) {
-			xPhysicsFactor += speed * 20 * Time.deltaTime;
+			xPhysicsFactor += speed * 10 * Time.deltaTime;
 			nextWallKickTime = Time.time + wallKickCoolDown;
 			return;
 		}
 		if (rightHit) {
-			xPhysicsFactor -= speed * 20 * Time.deltaTime;
+			xPhysicsFactor -= speed * 10 * Time.deltaTime;
 			nextWallKickTime = Time.time + wallKickCoolDown;
 		}
 	}
