@@ -55,11 +55,9 @@ public class PlatformMovement : MonoBehaviour {
 	private CameraMovement camMovement;
 	private AudioSource audioSrc;
 	private AudioSource effectAudioSrc;
-	private Player player;
 
 
 	void Start () {
-		player = gameObject.GetComponent<Player>();
 		camMovement = Camera.main.GetComponent<CameraMovement>();
 		newCollider = gameObject.GetComponent<CapsuleCollider>();
 		dust = this.GetComponentInChildren<ParticleSystem>();
@@ -99,12 +97,6 @@ public class PlatformMovement : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		updateMovement();
-		movement = new Vector3(0f, 0f, 0f);
-		updateDrag();
-	}
-
-	private void updateMovement() {
 		float yVelocity = rb.velocity.y - gravity;
 		xPhysicsFactor *= airFriction;
 		if (jumped) {
@@ -114,6 +106,8 @@ public class PlatformMovement : MonoBehaviour {
 			if (!bottomHit) PlayParticleSystem();
 		}
 		rb.velocity = new Vector3(movement.x + xPhysicsFactor, yVelocity, rb.velocity.z);
+		movement = new Vector3(0f, 0f, 0f);
+		updateDrag();
 	}
 
 	private void handleInputs() {
@@ -124,13 +118,12 @@ public class PlatformMovement : MonoBehaviour {
 			xPhysicsFactor = 0;
 			if(rb.velocity.y < 0f && !landed) {
 				playSound(landingSound);
-				landed = true;
+				landed = !landed;
 			}
-		}else landed = false;
+		}
 	}
 
 	private void updateStrafe() {
-		if(player.isDead()) return;
 		if(nextWallKickTime > Time.time) return;
 		if (Input.GetKey(KeyCode.A)) {
 			movement.x -= speed * Time.deltaTime;
@@ -141,12 +134,13 @@ public class PlatformMovement : MonoBehaviour {
 	}
 
 	private void updateJump() {
-		if (!Input.GetKeyDown(KeyCode.Space) || jumpCount >= maxJumpAllowed || Time.time < nextJumpTime || player.isDead()) return;
+		if (!Input.GetKeyDown(KeyCode.Space) || jumpCount >= maxJumpAllowed || Time.time < nextJumpTime) return;
 		playSound(jumpSound);
 		rb.drag = 0;
 		nextJumpTime = Time.time + jumpCoolDown;
 		jumped = true;
 		if(bottomHit) return;
+		landed = false;
 		if (leftHit) {
 			xPhysicsFactor += speed * 20 * Time.deltaTime;
 			nextWallKickTime = Time.time + wallKickCoolDown;

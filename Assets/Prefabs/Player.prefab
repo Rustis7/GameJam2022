@@ -4874,8 +4874,8 @@ GameObject:
   - component: {fileID: 7888502830351806926}
   - component: {fileID: 7888502830351806927}
   - component: {fileID: 7888502830351806924}
-  - component: {fileID: 7888502830351806928}
   - component: {fileID: 7721955312090469051}
+  - component: {fileID: 8870599163646914835}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -4961,33 +4961,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7888502830351806928
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7888502830351806925}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 817db4610bf0340a3982c5516a5ed438, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxJumpAllowed: 2
-  jumpCount: 1
-  speed: 600
-  jumpForce: 25
-  rb: {fileID: 0}
-  newCollider: {fileID: 0}
-  bottomHit: 0
-  leftHit: 0
-  rightHit: 0
-  sensorLength: 0
-  movement: {x: 0, y: 0}
-  jumped: 0
-  jumpCoolDown: 0.2
-  wallKickCoolDown: 0.3
-  dust: {fileID: 0}
 --- !u!114 &7721955312090469051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5004,3 +4977,36 @@ MonoBehaviour:
   multiplier: 1
   healStrength: 50
   fadeMultiplier: 1
+  candySound: {fileID: 8300000, guid: 87f190001a77c48d3a5057879ce84c80, type: 3}
+  deathSound: {fileID: 8300000, guid: a57d4245cb2e4452db27f998b418479a, type: 3}
+  checkpointSound: {fileID: 8300000, guid: 18c9d6d9cd6cf4b58a6522a27a713022, type: 3}
+--- !u!114 &8870599163646914835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7888502830351806925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 817db4610bf0340a3982c5516a5ed438, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dust: {fileID: 0}
+  runningSound: {fileID: 8300000, guid: 3d32b0ffb4a4a4e59a020781b326f23f, type: 3}
+  jumpSound: {fileID: 8300000, guid: d3644328815d74be2af40c76fd37a632, type: 3}
+  landingSound: {fileID: 8300000, guid: 2fdaf61fcbcfd4a2983a85734603b6a5, type: 3}
+  maxJumpAllowed: 2
+  jumpCount: 1
+  speed: 600
+  jumpForce: 25
+  rb: {fileID: 0}
+  newCollider: {fileID: 0}
+  bottomHit: 0
+  leftHit: 0
+  rightHit: 0
+  sensorLength: 0
+  movement: {x: 0, y: 0}
+  jumped: 0
+  jumpCoolDown: 0.2
+  wallKickCoolDown: 0.3
