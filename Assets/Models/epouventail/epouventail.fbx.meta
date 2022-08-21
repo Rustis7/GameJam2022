@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 69d50ced4cee48c49badf746c970e550
+guid: 3b5aeddd3448b6c4abda4f8927278e11
 ModelImporter:
   serializedVersion: 20300
   internalIDToNameTable: []
@@ -7,8 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: txt_fence
-    second: {fileID: 2100000, guid: 4d784c110c503874099017550c8ff980, type: 2}
+      name: epouventail-tissu
+    second: {fileID: -5992962578686911472, guid: 3b5aeddd3448b6c4abda4f8927278e11, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: hay
+    second: {fileID: 2100000, guid: e4a8f949d084a7c4d952e489928e87fd, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
