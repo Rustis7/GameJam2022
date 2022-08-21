@@ -8,6 +8,7 @@ TagManager:
   - Checkpoint
   - Heal
   - Trap
+  - Chocolate
   layers:
   - Default
   - TransparentFX
