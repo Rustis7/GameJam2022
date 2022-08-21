@@ -148,10 +148,10 @@ public class PlatformMovement : MonoBehaviour {
 		if(player.isDead()) return;
 		if(nextWallKickTime > Time.time) return;
 		if (Input.GetKey(KeyCode.A)) {
-			movement.x -= speed * Time.deltaTime;
+			movement.x -= calculateCurrentSpeed() * Time.deltaTime;
 		}
 		if (Input.GetKey(KeyCode.D)) {
-			movement.x += speed * Time.deltaTime;
+			movement.x += calculateCurrentSpeed() * Time.deltaTime;
 		}
 	}
 
@@ -163,12 +163,12 @@ public class PlatformMovement : MonoBehaviour {
 		jumped = true;
 		if(bottomHit) return;
 		if (leftHit) {
-			xPhysicsFactor += speed * 10 * Time.deltaTime;
+			xPhysicsFactor += calculateCurrentSpeed() * 10 * Time.deltaTime;
 			nextWallKickTime = Time.time + wallKickCoolDown;
 			return;
 		}
 		if (rightHit) {
-			xPhysicsFactor -= speed * 10 * Time.deltaTime;
+			xPhysicsFactor -= calculateCurrentSpeed() * 10 * Time.deltaTime;
 			nextWallKickTime = Time.time + wallKickCoolDown;
 		}
 	}
@@ -209,6 +209,10 @@ public class PlatformMovement : MonoBehaviour {
 		float minPitch = 0.75f;
 		effectAudioSrc.pitch = UnityEngine.Random.Range(minPitch, maxPitch);
 		effectAudioSrc.PlayOneShot(clip, UnityEngine.Random.Range(minPitch, maxPitch));
+	}
+
+	private float calculateCurrentSpeed() {
+		return this.speed - this.speed * (player.getWetness()/100)/4;
 	}
 
 }
