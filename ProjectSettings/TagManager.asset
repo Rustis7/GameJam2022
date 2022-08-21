@@ -10,6 +10,10 @@ TagManager:
   - Trap
   - Chocolate
   - initialSpawn
+  - umbrella
+  - hand
+  - thief
+  - thiefHand
   layers:
   - Default
   - TransparentFX

@@ -59,7 +59,6 @@ public class PlatformMovement : MonoBehaviour {
 	private Animator anim;
 	private float animationRotationFactor = 0;
 
-
 	void Start () {
 		anim = gameObject.GetComponentInChildren<Animator>();
 		player = gameObject.GetComponent<Player>();
@@ -73,6 +72,7 @@ public class PlatformMovement : MonoBehaviour {
 		effectAudioSrc.loop = false;
 		audioSrc.loop = true;
 		audioSrc.clip = runningSound;
+		playGetStolen();
 	}
 
 	private void setupRigidbody() {
@@ -213,6 +213,35 @@ public class PlatformMovement : MonoBehaviour {
 
 	private float calculateCurrentSpeed() {
 		return this.speed - this.speed * (player.getWetness()/100)/4;
+	}
+
+	private void playGetStolen() {
+		player.skip = true;
+		GameObject thief = GameObject.FindGameObjectsWithTag("thief")[0];
+		thief.transform.rotation = Quaternion.Euler(0, 0, 0);
+		GameObject umbrella = GameObject.FindGameObjectsWithTag("umbrella")[0];
+		GameObject hand = GameObject.FindGameObjectsWithTag("hand")[0];
+		umbrella.transform.SetParent(hand.transform);
+		umbrella.transform.localPosition = new Vector3(0,0,0);
+		umbrella.transform.localRotation = Quaternion.Euler(0,0,0);
+		anim.SetBool("hasParapluie", true);
+	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		if(!other.gameObject.CompareTag("thief")) return;
+		player.skip = false;
+		other.gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
+		anim.SetBool("hasParapluie", false);
+		GameObject umbrella = GameObject.FindGameObjectsWithTag("umbrella")[0];
+		GameObject hand = GameObject.FindGameObjectsWithTag("thiefHand")[0];
+		Animator otherAnim = other.gameObject.GetComponentInChildren<Animator>();
+		otherAnim.SetBool("hasParapluie", true);
+		otherAnim.SetBool("isRunning", true);
+		umbrella.transform.SetParent(hand.transform);
+		umbrella.transform.localPosition = new Vector3(0,0,0);
+		umbrella.transform.localRotation = Quaternion.Euler(0,0,0);
+		other.gameObject.GetComponent<Thief>().run();
 	}
 
 }

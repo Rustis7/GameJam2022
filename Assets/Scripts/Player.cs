@@ -36,6 +36,8 @@ public class Player : MonoBehaviour
 	private Animator anim;
 	private Material[] chocoMats;
 
+	public bool skip = false;
+
 	private void Awake()
 	{
 		this.initialSpawn = GameObject.FindGameObjectsWithTag("initialSpawn")[0].transform;
@@ -80,6 +82,7 @@ public class Player : MonoBehaviour
 
 	void Rain()
 	{
+		if(skip) return;
 		int layerMask = 1 << 3;
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.up), out hit, Mathf.Infinity, layerMask))
