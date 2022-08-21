@@ -32,9 +32,11 @@ public class Player : MonoBehaviour
 	private Transform checkpoint;
 	private AudioSource audioSrc;
 	private Animator anim;
+	private Material[] chocoMats;
 
 	private void Awake()
 	{
+		prepareChocoMaterials();
 		anim = gameObject.GetComponentInChildren<Animator>();
 		healItems = GameObject.FindGameObjectsWithTag("Heal");
 		deathOverlay = GameObject.Find("DeathOverlay").GetComponent<Image>();
@@ -46,8 +48,8 @@ public class Player : MonoBehaviour
 
 	void Update()
 	{
+		updateChocoMaterials();
 		health = Mathf.Clamp(health, 0f, 100f);
-		wetness = Mathf.Clamp(wetness, 0f, 100f);
 		if (wet) health -= Time.deltaTime * 10f * multiplier;
 		if (health <= 0) Death();
 		if (Input.GetKeyDown(KeyCode.E)) e = true;
@@ -57,6 +59,14 @@ public class Player : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
 			menu.SetActive(!menu.activeInHierarchy);
+		}
+	}
+
+	private void updateChocoMaterials() {
+		float roughness = 1 - (wetness/100);
+		if (roughness > 0.7f) roughness = 0.7f;
+		foreach(Material mat in chocoMats) {
+			mat.SetFloat("_Glossiness", roughness);
 		}
 	}
 
@@ -73,11 +83,13 @@ public class Player : MonoBehaviour
 		{
 			wet = false;
 			wetness -= Time.deltaTime * 30f;
+			wetness = Mathf.Clamp(wetness, 0f, 100f);
 			Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.up) * hit.distance, Color.yellow);
 			return;
 		}
 		wet = true;
 		wetness += Time.deltaTime * 30f;
+		wetness = Mathf.Clamp(wetness, 0f, 100f);
 		Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.up) * 1000, Color.white);
 	}
 
@@ -123,7 +135,6 @@ public class Player : MonoBehaviour
 		{
 			Respawn();
 			ReloadHealthItems();
-			//Restore player model and animations
 			dead = false;
 		}
 	}
@@ -132,6 +143,7 @@ public class Player : MonoBehaviour
 	{
 		if(checkpoint != null) transform.position = checkpoint.position;
 		health = 100;
+		wetness = 0;
 	}
 
 	public void ReloadHealthItems()
@@ -160,8 +172,22 @@ public class Player : MonoBehaviour
 		audioSrc.PlayOneShot(clip);
 	}
 
+	private void prepareChocoMaterials() {
+		List<Material> mats = new List<Material>();
+		foreach(GameObject obj in GameObject.FindGameObjectsWithTag("Chocolate")) {
+			foreach(Material mat in obj.GetComponent<Renderer>().materials) {
+				mats.Add(mat);
+			}
+		}
+		this.chocoMats = mats.ToArray();
+	}
+
 	public bool isDead() {
 		return dead;
+	}
+
+	public float getWetness() {
+		return wetness;
 	}
 
 }
