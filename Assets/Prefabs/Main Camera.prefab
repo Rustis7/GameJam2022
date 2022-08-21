@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7522794860746143260}
   - component: {fileID: 7522794860746143251}
   - component: {fileID: 7522794860746143262}
+  - component: {fileID: 2770855136175184353}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -102,3 +103,12 @@ MonoBehaviour:
   maxFov: 70
   minFov: 60
   fovSpeed: 3
+--- !u!45 &2770855136175184353
+Skybox:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7522794860746143250}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 2100000, guid: 43ae7fda14c7c4e26bdce789d5de9da3, type: 2}

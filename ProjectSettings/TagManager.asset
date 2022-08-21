@@ -7,6 +7,8 @@ TagManager:
   - Dry
   - Checkpoint
   - Heal
+  - Fire
+  - Chocolate
   layers:
   - Default
   - TransparentFX
