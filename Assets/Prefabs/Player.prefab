@@ -5078,6 +5078,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: personnagePrincipal
       objectReference: {fileID: 0}
+    - target: {fileID: 2591806059156113831, guid: b03823126c50c43a5baa851b4801cd6f, type: 3}
+      propertyPath: m_TagString
+      value: Chocolate
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b03823126c50c43a5baa851b4801cd6f, type: 3}
 --- !u!1 &5910892529936518644 stripped
